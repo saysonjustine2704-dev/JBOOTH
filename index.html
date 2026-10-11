@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>📸 JBOOTH 📸</title>
+    <link rel="stylesheet" href="design.css">
+</head>
+
+<body>
+
+   <header class="top-bar">
+    <h1> JBOOTH </h1>
+    <p>tamang selfie ka muna boy</p>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="photobooth">
+
+        <!-- INTRODUCTION -->
+        <section class="intro">
+            <p class="tag">ONLINE PHOTOBOOTH</p>
+
+            <h2>Let's take some pictures! 📸</h2>
+
+            <p>
+                Capture three pictures and save!.
+            </p>
+        </section>
+
+        <!-- PHOTOBOOTH CARD -->
+        <section class="booth-card">
+
+            <!-- CAMERA -->
+           <div class="camera-area">
+            <video id="camera" autoplay playsinline muted></video>
+            <div id="camera-message">Your camera preview will appear here ♡</div>
+            <div id="camera-countdown" aria-live="assertive"></div>
+        </div>
+
+            <!-- STATUS -->
+            <p id="status">
+                Ready for your photo session?
+            </p>
+
+            <!-- CAMERA CONTROLS -->
+            <div class="controls">
+
+                <button id="start-camera">
+                    Start Camera ♡
+                </button>
+
+                <button id="take-photo" disabled>
+                    Take Photo 📸
+                </button>
+
+            </div>
+
+            <!-- PHOTO COUNTER -->
+            <p class="photo-count">
+                Photos taken:
+                <span id="photo-count">0</span> / 3
+            </p>
+
+            <!-- PHOTO STRIP PREVIEW -->
+            <section class="strip-preview">
+
+                <h3>Your photo strip ♡</h3>
+
+                <div id="photo-strip" class="photo-strip">
+
+                    <div class="photo-slot">PHOTO 1</div>
+
+                    <div class="photo-slot">PHOTO 2</div>
+
+                    <div class="photo-slot">PHOTO 3</div>
+
+                    <p class="strip-caption">📸 JBOOTH 📸</p>
+                </div>
+
+            </section>
+
+            <!-- COLOR CUSTOMIZATION -->
+            <div class="customize">
+
+                <label for="strip-color">
+                    Choose your strip color
+                </label>
+
+                <select id="strip-color">
+                    <option value="#f6b8d0">Pink</option>
+                    <option value="#d94b55">Red</option>
+                    <option value="#a8d8f0">Blue</option>
+                    <option value="#222222">Black</option>
+                    <option value="#ffffff">White</option>
+                </select>
+
+            </div>
+
+            <!-- DOWNLOAD -->
+            <button id="download-photo" disabled>
+                Download Photo Strip ♡
+            </button>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        your online photobooth!
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+</html>
