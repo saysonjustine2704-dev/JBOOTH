@@ -110,7 +110,7 @@ setTimeout(() => {
         takePhotoBtn.disabled = false;
     } else {
         statusText.textContent =
-            "All three photos are ready! Choose a color and download ♡";
+            "All four photos are ready! Choose a color and download ♡";
 
         stopCamera();
         startCameraBtn.disabled = true;
@@ -152,7 +152,7 @@ colorPicker.addEventListener("change", () => {
 // ===== DOWNLOAD PHOTO STRIP =====
 downloadBtn.addEventListener("click", () => {
     if (photos.length !== 4) {
-        statusText.textContent = "Please take all three photos first ♡";
+        statusText.textContent = "Please take all four photos first ♡";
         return;
     }
 
@@ -232,6 +232,9 @@ function drawStrip() {
 
     statusText.textContent = "Your JPG has been downloaded! ♡";
 }
+
+// Close the download button event listener
+});
 
 // ===== STOP CAMERA =====
 
