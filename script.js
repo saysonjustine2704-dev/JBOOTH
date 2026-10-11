@@ -59,7 +59,7 @@ startCameraBtn.addEventListener("click", async () => {
 
 // ===== TAKE PHOTO =====
 takePhotoBtn.addEventListener("click", async () => {
-    if (!stream || busy || photos.length >= 3) {
+    if (!stream || busy || photos.length >= 4) {
         return;
     }
 
@@ -103,7 +103,7 @@ setTimeout(() => {
     updatePhotoStrip();
     photoCountText.textContent = photos.length;
 
-    if (photos.length < 3) {
+    if (photos.length < 4) {
         statusText.textContent =
             `Photo ${photos.length} saved! Take the next one ♡`;
         busy = false;
@@ -134,7 +134,7 @@ function updatePhotoStrip() {
         }
     });
 
-    downloadBtn.disabled = photos.length !== 3;
+    downloadBtn.disabled = photos.length !== 4;
 }
 
 // ===== CHANGE STRIP COLOR =====
@@ -151,7 +151,7 @@ colorPicker.addEventListener("change", () => {
 
 // ===== DOWNLOAD PHOTO STRIP =====
 downloadBtn.addEventListener("click", () => {
-    if (photos.length !== 3) {
+    if (photos.length !== 4) {
         statusText.textContent = "Please take all three photos first ♡";
         return;
     }
@@ -168,7 +168,7 @@ downloadBtn.addEventListener("click", () => {
 
     canvas.width = width;
     canvas.height =
-        padding * 2 + photoHeight * 3 + gap * 2 + captionHeight;
+    padding * 2 + photoHeight * 4 + gap * 3 + captionHeight;
 
     context.fillStyle = colorPicker.value;
     context.fillRect(0, 0, canvas.width, canvas.height);
@@ -180,7 +180,7 @@ downloadBtn.addEventListener("click", () => {
         image.onload = () => {
             loaded++;
 
-            if (loaded === 3) {
+            if (loaded ===4) {
                 drawStrip();
             }
         };
