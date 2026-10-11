@@ -222,7 +222,7 @@ downloadBtn.addEventListener("click", () => {
 
         context.font = "bold 26px Arial";
         context.textAlign = "center";
-        context.fillText("📸 JBOOTH 📸", width / 2, canvas.height - 25);
+        
 
         const link = document.createElement("a");
         link.download = "my-photobooth-strip.jpg";
