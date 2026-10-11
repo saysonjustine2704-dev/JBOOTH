@@ -193,45 +193,45 @@ downloadBtn.addEventListener("click", () => {
         return image;
     });
 
-    function drawStrip() {
-        images.forEach((image, index) => {
-            const y = padding + index * (photoHeight + gap);
 
-            // Crop the image to fit the photo frame.
-            const scale = Math.max(
-                photoWidth / image.width,
-                photoHeight / image.height
-            );
+function drawStrip() {
+    images.forEach((image, index) => {
+        const y = padding + index * (photoHeight + gap);
 
-            const sourceWidth = photoWidth / scale;
-            const sourceHeight = photoHeight / scale;
-            const sourceX = (image.width - sourceWidth) / 2;
-            const sourceY = (image.height - sourceHeight) / 2;
+        // Keep the entire photo visible without cropping.
+        const scale = Math.min(
+            photoWidth / image.width,
+            photoHeight / image.height
+        );
 
-            context.drawImage(
-                image,
-                sourceX, sourceY,
-                sourceWidth, sourceHeight,
-                padding, y,
-                photoWidth, photoHeight
-            );
-        });
+        const drawWidth = image.width * scale;
+        const drawHeight = image.height * scale;
 
-        context.fillStyle =
-            colorPicker.value === "#222222" ? "#ffffff" : "#684957";
+        // Center the photo inside its frame.
+        const x = padding + (photoWidth - drawWidth) / 2;
+        const photoY = y + (photoHeight - drawHeight) / 2;
 
-        context.font = "bold 26px Arial";
-        context.textAlign = "center";
-        
+        // White photo background.
+        context.fillStyle = "#ffffff";
+        context.fillRect(padding, y, photoWidth, photoHeight);
 
-        const link = document.createElement("a");
-        link.download = "my-photobooth-strip.jpg";
-        link.href = canvas.toDataURL("image/jpeg", 0.95);
-        link.click();
+        // Draw the entire photo without cropping.
+        context.drawImage(
+            image,
+            x,
+            photoY,
+            drawWidth,
+            drawHeight
+        );
+    });
 
-        statusText.textContent = "Your JPG has been downloaded! ♡";
-    }
-});
+    const link = document.createElement("a");
+    link.download = "my-photobooth-strip.jpg";
+    link.href = canvas.toDataURL("image/jpeg", 0.95);
+    link.click();
+
+    statusText.textContent = "Your JPG has been downloaded! ♡";
+}
 
 // ===== STOP CAMERA =====
 
