@@ -447,3 +447,63 @@ footer {
         font-size: 12px;
     }
 }
+
+
+/* Retake buttons on individual photos */
+.photo-slot {
+    position: relative;
+}
+
+.retake-slot-button {
+    position: absolute;
+    bottom: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+
+    padding: 7px 12px;
+    border: 1px solid #f2cada;
+    border-radius: 20px;
+
+    background: rgba(255, 240, 246, 0.96);
+    color: #a9587c;
+
+    font-family: 'Quicksand', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    box-shadow: 0 2px 8px rgba(104, 73, 87, 0.15);
+}
+
+.retake-slot-button:hover:not(:disabled) {
+    background: #ffffff;
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.retake-slot-button[hidden] {
+    display: none;
+}
+
+/* Brief camera flash when a photo is captured */
+.camera-area.flash-effect::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+
+    background: #ffffff;
+    pointer-events: none;
+
+    animation: camera-flash 180ms ease-out;
+}
+
+@keyframes camera-flash {
+    0% {
+        opacity: 0.95;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
