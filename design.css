@@ -8,802 +8,6 @@
     --text: #684957;
     --muted: #a78594;
     --border: #f5d6e3;
-    --white: #ffffff;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-}
-
-body {
-    font-family: 'Quicksand', sans-serif;
-    background:
-        radial-gradient(
-            circle at 10% 10%,
-            #ffe0ed 0,
-            transparent 25%
-        ),
-        radial-gradient(
-            circle at 90% 35%,
-            #ffe9d9 0,
-            transparent 25%
-        ),
-        #fff8fb;
-
-    color: var(--text);
-    min-height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
-}
-
-/* =====================================
-   HEADER
-===================================== */
-
-.top-bar {
-    text-align: center;
-    padding: 35px 20px 30px;
-    background: rgba(255, 255, 255, 0.85);
-    border-bottom: 1px solid var(--border);
-}
-
-.top-bar h1 {
-    font-size: 30px;
-    color: var(--dark-pink);
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-}
-
-.top-bar p {
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 1px;
-}
-
-/* =====================================
-   MAIN LAYOUT
-===================================== */
-
-.photobooth {
-    width: min(100% - 32px, 850px);
-    margin: 45px auto;
-}
-
-.intro {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.tag {
-    display: inline-block;
-    background: #ffe3ef;
-    color: #c66e94;
-    padding: 8px 15px;
-    border-radius: 30px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-bottom: 18px;
-}
-
-.intro h2 {
-    font-size: clamp(25px, 5vw, 36px);
-    font-weight: 700;
-    color: #a9587c;
-    margin-bottom: 12px;
-}
-
-.intro > p:last-child {
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.8;
-}
-
-/* =====================================
-   MAIN CARD
-===================================== */
-
-.booth-card {
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid #f6dce6;
-    border-radius: 28px;
-    padding: 30px;
-    box-shadow:
-        0 15px 45px rgba(190, 110, 145, 0.12);
-}
-
-/* =====================================
-   CAMERA FRAME
-===================================== */
-
-.camera-area {
-    position: relative;
-    width: 100%;
-    max-width: 560px;
-    aspect-ratio: 4 / 3;
-    margin: 0 auto;
-
-    background: #352a30;
-    border: 6px solid #fff0f6;
-    border-radius: 22px;
-    overflow: hidden;
-
-    box-shadow:
-        0 8px 25px rgba(104, 73, 87, 0.12);
-}
-
-#camera {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-
-    /* Mirror the camera preview */
-    transform: scaleX(-1);
-}
-
-#camera-message {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 25px;
-    text-align: center;
-
-    color: #ffffff;
-    font-size: 15px;
-    line-height: 1.8;
-
-    background:
-        radial-gradient(
-            circle at center,
-            #65505c,
-            #30252b
-        );
-
-    pointer-events: none;
-}
-
-/* =====================================
-   CAMERA COUNTDOWN
-===================================== */
-
-#camera-countdown {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    z-index: 5;
-
-    width: 58px;
-    height: 58px;
-
-    display: none;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(255, 240, 246, 0.96);
-    color: #bd6087;
-
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-
-    font-family: 'Quicksand', sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-
-    box-shadow:
-        0 4px 15px rgba(90, 40, 65, 0.2);
-}
-
-#camera-countdown.active {
-    display: flex;
-    animation: countdown-pop 0.35s ease;
-}
-
-@keyframes countdown-pop {
-    0% {
-        transform: scale(0.6);
-        opacity: 0.4;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* =====================================
-   STATUS
-===================================== */
-
-#status {
-    text-align: center;
-    min-height: 22px;
-    margin: 20px 0;
-
-    color: #bd7392;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.6;
-}
-
-/* =====================================
-   BUTTONS
-===================================== */
-
-.controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-button {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-
-    border: none;
-    border-radius: 50px;
-    padding: 14px 24px;
-
-    cursor: pointer;
-    touch-action: manipulation;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
-}
-
-#start-camera {
-    background: #fff0f6;
-    color: #b45c80;
-    border: 1px solid #f2cada;
-}
-
-#take-photo {
-    background: linear-gradient(
-        135deg,
-        #f4a9c7,
-        #d8759d
-    );
-
-    color: #ffffff;
-
-    box-shadow:
-        0 5px 15px rgba(216, 117, 157, 0.25);
-}
-
-button:hover:not(:disabled) {
-    transform: translateY(-3px);
-
-    box-shadow:
-        0 7px 18px rgba(190, 110, 145, 0.18);
-}
-
-button:active:not(:disabled) {
-    transform: scale(0.97);
-}
-
-button:disabled {
-    background: #eee6ea;
-    color: #b7a8af;
-    box-shadow: none;
-    cursor: not-allowed;
-}
-
-/* =====================================
-   PHOTO COUNTER
-===================================== */
-
-.photo-count {
-    text-align: center;
-    margin-top: 18px;
-
-    font-size: 13px;
-    color: var(--muted);
-}
-
-#photo-count {
-    display: inline-block;
-    min-width: 24px;
-
-    color: #c56890;
-    font-weight: 700;
-}
-
-/* =====================================
-   PHOTO STRIP PREVIEW
-===================================== */
-
-.strip-preview {
-    text-align: center;
-    margin-top: 42px;
-    padding-top: 30px;
-
-    border-top: 1px dashed #eccbd9;
-}
-
-.strip-preview h3 {
-    font-size: 20px;
-    color: #a9587c;
-    margin-bottom: 22px;
-}
-
-.photo-strip {
-    width: 205px;
-    margin: 0 auto;
-    padding: 13px 13px 8px;
-
-    background: #f6b8d0;
-    border: 1px solid rgba(180, 92, 128, 0.15);
-    border-radius: 3px;
-
-    box-shadow:
-        0 10px 25px rgba(104, 73, 87, 0.16);
-
-    transition: background-color 0.25s ease;
-}
-
-.photo-slot {
-    width: 100%;
-    height: 125px;
-    margin-bottom: 10px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    overflow: hidden;
-
-    background: #fff8fb;
-    color: #c38aa2;
-
-    border: 1px dashed #e9a9c2;
-
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-
-     background-color: #ffffff;
-    border: 5px solid #ffffff;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-
-.photo-slot img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-
-.strip-caption {
-    padding: 8px 0 5px;
-
-    color: #684957;
-    text-align: center;
-
-    font-family: 'Pacifico', cursive;
-    font-size: 14px;
-}
-
-/* =====================================
-   STRIP COLOR SELECTOR
-===================================== */
-
-.customize {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin: 30px 0;
-}
-
-.customize label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #98677b;
-}
-
-select {
-    width: 200px;
-    min-height: 44px;
-    padding: 12px 15px;
-
-    border: 1px solid #eccbd9;
-    border-radius: 14px;
-
-    background: #fff8fb;
-    color: #684957;
-
-    font-family: 'Quicksand', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-
-    cursor: pointer;
-    outline: none;
-}
-
-select:focus {
-    border-color: #d8759d;
-    box-shadow: 0 0 0 3px #fce5ef;
-}
-
-/* =====================================
-   DOWNLOAD BUTTON
-===================================== */
-
-#download-photo {
-    display: block;
-    width: 100%;
-    max-width: 290px;
-
-    margin: 0 auto;
-    padding: 16px 20px;
-
-    background: linear-gradient(
-        135deg,
-        #d8759d,
-        #ba6087
-    );
-
-    color: #ffffff;
-
-    box-shadow:
-        0 6px 18px rgba(186, 96, 135, 0.22);
-}
-
-/* =====================================
-   FOOTER
-===================================== */
-
-footer {
-    padding: 25px 15px 35px;
-    text-align: center;
-
-    color: #b68a9e;
-    font-size: 12px;
-    letter-spacing: 1px;
-}
-
-/* =====================================
-   MOBILE RESPONSIVE DESIGN
-===================================== */
-
-@media (max-width: 600px) {
-    .top-bar {
-        padding: 27px 12px;
-    }
-
-    .top-bar h1 {
-        font-size: 23px;
-    }
-
-    .top-bar p {
-        font-size: 11px;
-    }
-
-    .photobooth {
-        width: calc(100% - 24px);
-        margin: 30px auto;
-    }
-
-    .booth-card {
-        padding: 17px;
-        border-radius: 22px;
-    }
-
-    .intro h2 {
-        font-size: 25px;
-    }
-
-    .intro > p:last-child {
-        font-size: 13px;
-    }
-
-    .camera-area {
-        aspect-ratio: 3 / 4;
-        border-width: 4px;
-        border-radius: 15px;
-    }
-
-    #camera-countdown {
-        top: 10px;
-        right: 10px;
-
-        width: 50px;
-        height: 50px;
-        font-size: 25px;
-    }
-
-    .controls {
-        flex-direction: column;
-    }
-
-    .controls button {
-        width: 100%;
-        min-height: 46px;
-        font-size: 14px;
-    }
-
-    .photo-strip {
-        width: 190px;
-        max-width: 100%;
-    }
-
-    #download-photo {
-        min-height: 48px;
-        font-size: 12px;
-    }
-}
-
-
-/* Center the countdown inside the camera */
-#camera-countdown {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, -50%);
-    z-index: 5;
-
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(255, 255, 255, 0.9);
-    color: #e75480;
-    font-size: 48px;
-    font-weight: bold;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-#camera-countdown.active {
-    opacity: 1;
-    visibility: visible;
-    animation: countdownPop 0.9s ease-in-out;
-}
-
-@keyframes countdownPop {
-    0% {
-        transform: translate(-50%, -50%) scale(0.6);
-    }
-    35% {
-        transform: translate(-50%, -50%) scale(1.15);
-    }
-    70%, 100% {
-        transform: translate(-50%, -50%) scale(1);
-    }
-}
-
-.camera-area.flash::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: white;
-    z-index: 4;
-    pointer-events: none;
-    animation: photoFlash 0.35s ease-out forwards;
-}
-
-@keyframes photoFlash {
-    0% {
-        opacity: 0;
-    }
-    25% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
-/* Keep the camera preview as the positioning container */
-.camera-area {
-    position: relative !important;
-    overflow: hidden;
-    isolation: isolate;
-}
-
-/* Camera video stays behind the countdown */
-#camera {
-    position: relative;
-    z-index: 1;
-    display: block;
-    width: 100%;
-}
-
-/* Keep the message above the video */
-#camera-message {
-    z-index: 2;
-}
-
-/* Countdown stays visible in the exact center */
-#camera-countdown {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    right: auto !important;
-    bottom: auto !important;
-
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.95);
-    color: #e75480;
-    font-size: 48px;
-    font-weight: bold;
-
-    z-index: 10 !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-#camera-countdown.active {
-    opacity: 1;
-    visibility: visible;
-    animation: countdownPop 0.9s ease-in-out;
-}
-
-@keyframes countdownPop {
-    0% {
-        transform: translate(-50%, -50%) scale(0.6);
-    }
-    35% {
-        transform: translate(-50%, -50%) scale(1.15);
-    }
-    70%, 100% {
-        transform: translate(-50%, -50%) scale(1);
-    }
-}
-
-
-#camera-message.session-complete {
-    display: flex !important;
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-
-    padding: 24px;
-    box-sizing: border-box;
-
-    background: #fff0f5;
-    color: #b44f76;
-
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.6;
-}
-
-
-/* ===== TRADITIONAL 2 x 6 PHOTO STRIP ===== */
-
-.photo-strip {
-    width: 205px;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 13px 13px 0;
-    box-sizing: border-box;
-    border-radius: 0;
-    aspect-ratio: auto;
-}
-
-.photo-slot {
-    width: 100%;
-    height: 125px;
-    margin-bottom: 10px;
-    padding: 0;
-    overflow: hidden;
-    background: #ffffff;
-    border: 5px solid #ffffff;
-    box-sizing: border-box;
-}
-
-.photo-slot img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.strip-caption {
-    height: 70px;
-    margin: 0 -13px;
-    padding: 0;
-    background-color: transparent;
-    color: #ffffff;
-    font-size: 0;
-}
-
-@media (max-width: 600px) {
-    .photo-strip {
-        width: 205px;
-        max-width: 100%;
-    }
-
-    .photo-slot {
-        height: 125px;
-    }
-}
-
-
-/* Make the preview footer match the selected color */
-.photo-strip {
-    background-color: #f6b8d0;
-}
-
-.strip-caption {
-    background-color: transparent !important;
-}
-
-
-
-/* Mobile landscape instruction */
-.mobile-landscape-message {
-    display: none;
-}
-
-@media screen and (max-width: 600px) {
-    .mobile-landscape-message {
-        display: block;
-        margin: 15px auto;
-        padding: 12px;
-        max-width: 90%;
-        background: #fff0f6;
-        color: #a34e78;
-        border: 1px dashed #e7a2c2;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: bold;
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap');
-
-/* =====================================
-   COLORS AND RESET
-===================================== */
-
-:root {
-    --pink: #f4a9c7;
-    --dark-pink: #d8759d;
-    --light-pink: #fff0f6;
-    --text: #684957;
-    --muted: #a78594;
-    --border: #f5d6e3;
-    --white: #ffffff;
 }
 
 * {
@@ -829,10 +33,6 @@ body {
         #fff8fb;
 }
 
-/* =====================================
-   HEADER
-===================================== */
-
 .top-bar {
     text-align: center;
     padding: 35px 20px 30px;
@@ -852,10 +52,6 @@ body {
     font-size: 13px;
     letter-spacing: 1px;
 }
-
-/* =====================================
-   MAIN LAYOUT
-===================================== */
 
 .photobooth {
     width: min(100% - 32px, 850px);
@@ -892,35 +88,6 @@ body {
     line-height: 1.8;
 }
 
-/* =====================================
-   MOBILE LANDSCAPE INSTRUCTION
-===================================== */
-
-.mobile-landscape-message {
-    display: none;
-}
-
-@media screen and (max-width: 600px) {
-    .mobile-landscape-message {
-        display: block;
-        max-width: 90%;
-        margin: 15px auto;
-        padding: 12px;
-        border: 1px dashed #e7a2c2;
-        border-radius: 10px;
-        background: #fff0f6;
-        color: #a34e78;
-        font-size: 13px;
-        font-weight: 700;
-        line-height: 1.6;
-        text-align: center;
-    }
-}
-
-/* =====================================
-   MAIN CARD
-===================================== */
-
 .booth-card {
     padding: 30px;
     border: 1px solid #f6dce6;
@@ -928,10 +95,6 @@ body {
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 15px 45px rgba(190, 110, 145, 0.12);
 }
-
-/* =====================================
-   CAMERA FRAME
-===================================== */
 
 .camera-area {
     position: relative;
@@ -966,7 +129,7 @@ body {
     justify-content: center;
     padding: 25px;
     background: radial-gradient(circle at center, #65505c, #30252b);
-    color: #ffffff;
+    color: #fff;
     font-size: 15px;
     line-height: 1.8;
     text-align: center;
@@ -974,17 +137,11 @@ body {
 }
 
 #camera-message.session-complete {
-    display: flex !important;
     background: #fff0f5;
     color: #b44f76;
     font-size: 18px;
     font-weight: 700;
-    line-height: 1.6;
 }
-
-/* =====================================
-   COUNTDOWN
-===================================== */
 
 #camera-countdown {
     position: absolute;
@@ -996,7 +153,7 @@ body {
     justify-content: center;
     width: 90px;
     height: 90px;
-    border: 2px solid #ffffff;
+    border: 2px solid #fff;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.95);
     color: #e75480;
@@ -1016,47 +173,28 @@ body {
     0% {
         transform: translate(-50%, -50%) scale(0.6);
     }
-
     35% {
         transform: translate(-50%, -50%) scale(1.15);
     }
-
     70%, 100% {
         transform: translate(-50%, -50%) scale(1);
     }
 }
-
-/* =====================================
-   CAMERA FLASH
-===================================== */
 
 .camera-area.flash::after {
     content: "";
     position: absolute;
     z-index: 4;
     inset: 0;
-    background: #ffffff;
+    background: white;
     pointer-events: none;
     animation: photoFlash 0.35s ease-out forwards;
 }
 
 @keyframes photoFlash {
-    0% {
-        opacity: 0;
-    }
-
-    25% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
+    0%, 100% { opacity: 0; }
+    25% { opacity: 1; }
 }
-
-/* =====================================
-   STATUS
-===================================== */
 
 #status {
     min-height: 22px;
@@ -1067,10 +205,6 @@ body {
     line-height: 1.6;
     text-align: center;
 }
-
-/* =====================================
-   BUTTONS
-===================================== */
 
 .controls {
     display: flex;
@@ -1089,10 +223,7 @@ button {
     font-weight: 700;
     cursor: pointer;
     touch-action: manipulation;
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #start-camera {
@@ -1103,7 +234,7 @@ button {
 
 #take-photo {
     background: linear-gradient(135deg, #f4a9c7, #d8759d);
-    color: #ffffff;
+    color: white;
     box-shadow: 0 5px 15px rgba(216, 117, 157, 0.25);
 }
 
@@ -1123,10 +254,6 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* =====================================
-   PHOTO COUNTER
-===================================== */
-
 .photo-count {
     margin-top: 18px;
     color: var(--muted);
@@ -1141,10 +268,6 @@ button:disabled {
     font-weight: 700;
 }
 
-/* =====================================
-   PHOTO STRIP PREVIEW
-===================================== */
-
 .strip-preview {
     margin-top: 42px;
     padding-top: 30px;
@@ -1158,7 +281,7 @@ button:disabled {
     font-size: 20px;
 }
 
-/* Tall, narrow 2 x 6-style strip */
+/* Keep the original strip dimensions */
 .photo-strip {
     width: 205px;
     max-width: 100%;
@@ -1171,7 +294,6 @@ button:disabled {
     transition: background-color 0.25s ease;
 }
 
-/* Four white photo frames */
 .photo-slot {
     display: flex;
     align-items: center;
@@ -1182,38 +304,29 @@ button:disabled {
     padding: 0;
     overflow: hidden;
     box-sizing: border-box;
-    border: 5px solid #ffffff;
-    background: #ffffff;
+    border: 5px solid white;
+    background: white;
     color: #c38aa2;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1px;
 }
 
-/* Automatically crop photos to fill each frame */
 .photo-slot img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
 }
 
-/* Longer bottom section that matches the selected strip color */
 .strip-caption {
     height: 70px;
     margin: 0 -13px;
     padding: 0;
-    overflow: hidden;
-    background-color: transparent;
-    color: #ffffff;
-    font-family: 'Pacifico', cursive;
+    background: transparent;
     font-size: 0;
-    text-align: center;
 }
-
-/* =====================================
-   COLOR CUSTOMIZATION
-===================================== */
 
 .customize {
     display: flex;
@@ -1249,10 +362,6 @@ select:focus {
     box-shadow: 0 0 0 3px #fce5ef;
 }
 
-/* =====================================
-   DOWNLOAD BUTTON
-===================================== */
-
 #download-photo {
     display: block;
     width: 100%;
@@ -1260,13 +369,9 @@ select:focus {
     margin: 0 auto;
     padding: 16px 20px;
     background: linear-gradient(135deg, #d8759d, #ba6087);
-    color: #ffffff;
+    color: white;
     box-shadow: 0 6px 18px rgba(186, 96, 135, 0.22);
 }
-
-/* =====================================
-   FOOTER
-===================================== */
 
 footer {
     padding: 25px 15px 35px;
@@ -1275,10 +380,6 @@ footer {
     letter-spacing: 1px;
     text-align: center;
 }
-
-/* =====================================
-   MOBILE RESPONSIVE DESIGN
-===================================== */
 
 @media screen and (max-width: 600px) {
     .top-bar {
@@ -1345,72 +446,4 @@ footer {
         min-height: 48px;
         font-size: 12px;
     }
-}
-
-        line-height: 1.6;
-        text-align: center;
-    }
-}
-
-
-.photo-slot {
-    overflow: hidden;
-}
-
-.photo-slot img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-
-/* FIX: Prevent double scrolling */
-html {
-    height: auto;
-    min-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-body {
-    height: auto;
-    min-height: 100vh;
-    margin: 0;
-    overflow-x: hidden;
-    overflow-y: visible;
-}
-
-.photobooth,
-.booth-card,
-.intro,
-.strip-preview {
-    height: auto;
-    max-height: none;
-    overflow: visible;
-}
-
-/* FIX: Prevent double scrolling */
-html {
-    height: auto;
-    min-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-body {
-    height: auto;
-    min-height: 100vh;
-    margin: 0;
-    overflow-x: hidden;
-    overflow-y: visible;
-}
-
-.photobooth,
-.booth-card,
-.intro,
-.strip-preview {
-    height: auto;
-    max-height: none;
-    overflow: visible;
 }
