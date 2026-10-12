@@ -349,7 +349,7 @@ downloadButton.addEventListener("click", async () => {
         const SLOT_W = STRIP_W - PAD * 2;   // 219
         const SLOT_H = 167;
         const GAP = 10;
-        const BORDER = 5;
+        const BORDER = 0;
         const CAPTION_H = 70;
         const STRIP_H = PAD + photos.length * (SLOT_H + GAP) + CAPTION_H - GAP + GAP;
 

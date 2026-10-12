@@ -263,7 +263,7 @@ button:disabled {
     margin-bottom: 10px;
     padding: 0;
     overflow: hidden;
-    border: 5px solid #fff;
+    border: none;
     background: #fff;
     color: #c38aa2;
     font-size: 11px;
