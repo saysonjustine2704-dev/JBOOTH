@@ -143,9 +143,27 @@ async function capturePhoto() {
             throw new Error("Camera is not ready.");
         }
 
+        // Always save a landscape 4:3 photo (center crop), so phones
+        // (which give a tall portrait video) match the strip slots.
+        const videoW = camera.videoWidth;
+        const videoH = camera.videoHeight;
+        const targetRatio = 4 / 3;
+
+        let cropW = videoW;
+        let cropH = videoH;
+
+        if (videoW / videoH > targetRatio) {
+            cropW = videoH * targetRatio;
+        } else {
+            cropH = videoW / targetRatio;
+        }
+
+        const cropX = (videoW - cropW) / 2;
+        const cropY = (videoH - cropH) / 2;
+
         const canvas = document.createElement("canvas");
-        canvas.width = camera.videoWidth;
-        canvas.height = camera.videoHeight;
+        canvas.width = Math.round(cropW);
+        canvas.height = Math.round(cropH);
 
         const context = canvas.getContext("2d");
 
@@ -154,6 +172,10 @@ async function capturePhoto() {
         context.scale(-1, 1);
         context.drawImage(
             camera,
+            cropX,
+            cropY,
+            cropW,
+            cropH,
             0,
             0,
             canvas.width,
