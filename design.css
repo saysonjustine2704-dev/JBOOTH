@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
 :root {
@@ -259,7 +258,7 @@ button:disabled {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 125px;
+    height: 167px;
     margin-bottom: 10px;
     padding: 0;
     overflow: hidden;
@@ -293,11 +292,17 @@ button:disabled {
 
 
 .strip-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 70px;
     margin: 0 -13px;
-    padding: 0;
+    padding: 0 13px;
+    overflow: hidden;
     background: transparent;
-    font-size: 0;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
 }
 
 /* Retake buttons */
@@ -377,6 +382,26 @@ select {
 }
 
 select:focus {
+    border-color: #d8759d;
+    box-shadow: 0 0 0 3px #fce5ef;
+}
+
+#strip-text {
+    width: 240px;
+    max-width: 100%;
+    min-height: 44px;
+    padding: 12px 15px;
+    border: 1px solid #eccbd9;
+    border-radius: 14px;
+    outline: none;
+    background: #fff8fb;
+    color: #684957;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#strip-text:focus {
     border-color: #d8759d;
     box-shadow: 0 0 0 3px #fce5ef;
 }

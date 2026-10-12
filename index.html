@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,6 +81,10 @@
                     <option value="#222222">Black</option>
                     <option value="#ffffff">White</option>
                 </select>
+
+                <label for="strip-text">Add text to your strip (optional)</label>
+
+                <input id="strip-text" type="text" maxlength="30" placeholder="Type anything...">
             </div>
 
             <button id="download-photo" type="button" disabled>
@@ -92,8 +95,6 @@
 
     <footer>your online photobooth!</footer>
 
-    <!-- Captures the actual photo-strip preview for download -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

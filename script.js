@@ -8,6 +8,8 @@ const photoCount = document.getElementById("photo-count");
 const photoStrip = document.getElementById("photo-strip");
 const stripColor = document.getElementById("strip-color");
 const downloadButton = document.getElementById("download-photo");
+const stripText = document.getElementById("strip-text");
+const stripCaption = photoStrip.querySelector(".strip-caption");
 
 const slots = Array.from(
     photoStrip.querySelectorAll(".photo-slot")
@@ -338,7 +340,31 @@ function showFlash() {
 
 stripColor.addEventListener("change", () => {
     photoStrip.style.backgroundColor = stripColor.value;
+    updateCaption();
 });
+
+
+// ---------------------------------
+// STRIP TEXT (shown in the space below the photos)
+// ---------------------------------
+
+// White text on dark strips, dark text on light strips.
+function getTextColor(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    return brightness < 140 ? "#ffffff" : "#684957";
+}
+
+function updateCaption() {
+    stripCaption.textContent = stripText.value;
+    stripCaption.style.color = getTextColor(stripColor.value);
+}
+
+stripText.addEventListener("input", updateCaption);
+updateCaption();
 
 
 // ---------------------------------
@@ -411,6 +437,33 @@ downloadButton.addEventListener("click", async () => {
             const sy = (img.height - sh) / 2;
 
             ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+        }
+
+        // Draw the custom text in the space below the photos.
+        const text = stripText.value.trim();
+
+        if (text) {
+            if (document.fonts?.ready) {
+                await document.fonts.ready;
+            }
+
+            const captionTop = PAD + photos.length * (SLOT_H + GAP);
+            const captionCenterY = (captionTop + CAPTION_H / 2) * S;
+            const maxTextWidth = SLOT_W * S;
+
+            // Shrink the text if it is too long to fit.
+            let fontSize = 18 * S;
+            ctx.font = `700 ${fontSize}px Quicksand, sans-serif`;
+
+            while (ctx.measureText(text).width > maxTextWidth && fontSize > 8 * S) {
+                fontSize -= S / 2;
+                ctx.font = `700 ${fontSize}px Quicksand, sans-serif`;
+            }
+
+            ctx.fillStyle = getTextColor(stripColor.value);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, canvas.width / 2, captionCenterY);
         }
 
         canvas.toBlob(blob => {
