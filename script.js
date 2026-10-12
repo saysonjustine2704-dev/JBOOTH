@@ -1,4 +1,3 @@
-
 const camera = document.getElementById("camera");
 const cameraMessage = document.getElementById("camera-message");
 const countdown = document.getElementById("camera-countdown");
@@ -321,19 +320,21 @@ stripColor.addEventListener("change", () => {
 
 
 // ---------------------------------
-// DOWNLOAD THE ACTUAL PREVIEW
+// DOWNLOAD THE PHOTO STRIP (drawn directly for sharp quality)
 // ---------------------------------
+
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
+}
 
 downloadButton.addEventListener("click", async () => {
     if (!photos.every(Boolean)) {
-        statusText.textContent =
-            "Please complete all four photos first.";
-        return;
-    }
-
-    if (typeof html2canvas !== "function") {
-        statusText.textContent =
-            "The download library did not load. Refresh the page and try again.";
+        statusText.textContent = "Please complete all four photos first.";
         return;
     }
 
@@ -341,30 +342,58 @@ downloadButton.addEventListener("click", async () => {
     statusText.textContent = "Preparing your photo strip...";
 
     try {
-        // Wait for fonts so the captured layout matches the preview.
-        if (document.fonts?.ready) {
-            await document.fonts.ready;
+        // Layout in the same units as the preview, scaled up for quality.
+        const S = 6;
+        const STRIP_W = 245;
+        const PAD = 13;
+        const SLOT_W = STRIP_W - PAD * 2;   // 219
+        const SLOT_H = 167;
+        const GAP = 10;
+        const BORDER = 5;
+        const CAPTION_H = 70;
+        const STRIP_H = PAD + photos.length * (SLOT_H + GAP) + CAPTION_H - GAP + GAP;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = STRIP_W * S;
+        canvas.height = STRIP_H * S;
+
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
+        // Strip background
+        ctx.fillStyle = stripColor.value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < photos.length; i++) {
+            const img = await loadImage(photos[i]);
+
+            const x = PAD * S;
+            const y = (PAD + i * (SLOT_H + GAP)) * S;
+
+            // White frame
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(x, y, SLOT_W * S, SLOT_H * S);
+
+            // Photo area inside the frame
+            const dx = x + BORDER * S;
+            const dy = y + BORDER * S;
+            const dw = (SLOT_W - BORDER * 2) * S;
+            const dh = (SLOT_H - BORDER * 2) * S;
+
+            // Crop to fill (same as object-fit: cover)
+            const scale = Math.max(dw / img.width, dh / img.height);
+            const sw = dw / scale;
+            const sh = dh / scale;
+            const sx = (img.width - sw) / 2;
+            const sy = (img.height - sh) / 2;
+
+            ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
         }
-
-        const canvas = await html2canvas(photoStrip, {
-            scale: 3,
-            backgroundColor: null,
-            logging: false,
-
-            // Hide Retake buttons only in the exported copy.
-            onclone: clonedDocument => {
-                clonedDocument
-                    .querySelectorAll(".retake-slot-button")
-                    .forEach(button => {
-                        button.style.display = "none";
-                    });
-            }
-        });
 
         canvas.toBlob(blob => {
             if (!blob) {
-                statusText.textContent =
-                    "Could not create the JPG. Please try again.";
+                statusText.textContent = "Could not create the JPG. Please try again.";
                 downloadButton.disabled = false;
                 return;
             }
@@ -378,16 +407,12 @@ downloadButton.addEventListener("click", async () => {
 
             setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-            statusText.textContent =
-                "Your photo strip has been downloaded!";
+            statusText.textContent = "Your photo strip has been downloaded!";
             downloadButton.disabled = false;
         }, "image/jpeg", 0.98);
     } catch (error) {
         console.error("Download error:", error);
-
-        statusText.textContent =
-            "Download failed. Refresh the page and try again.";
-
+        statusText.textContent = "Download failed. Refresh the page and try again.";
         downloadButton.disabled = false;
     }
 });
