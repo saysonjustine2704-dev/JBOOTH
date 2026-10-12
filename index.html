@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📸 JBOOTH 📸</title>
+    <title>JBOOTH - Online Photobooth</title>
+
     <link rel="stylesheet" href="design.css">
 </head>
 <body>
@@ -22,17 +24,24 @@
         <section class="booth-card">
             <div class="camera-area">
                 <video id="camera" autoplay playsinline muted></video>
+
                 <div id="camera-message">
                     Your camera preview will appear here ♡
                 </div>
+
                 <div id="camera-countdown" aria-live="assertive"></div>
             </div>
 
             <p id="status">Ready for your photo session?</p>
 
             <div class="controls">
-                <button id="start-camera" type="button">Start Camera ♡</button>
-                <button id="take-photo" type="button" disabled>Take Photo 📸</button>
+                <button id="start-camera" type="button">
+                    Start Camera ♡
+                </button>
+
+                <button id="take-photo" type="button" disabled>
+                    Take Photo 📸
+                </button>
             </div>
 
             <p class="photo-count">
@@ -41,17 +50,31 @@
 
             <section class="strip-preview">
                 <h3>Your photo strip ♡</h3>
+
                 <div id="photo-strip" class="photo-strip">
-                    <div class="photo-slot">PHOTO 1</div>
-                    <div class="photo-slot">PHOTO 2</div>
-                    <div class="photo-slot">PHOTO 3</div>
-                    <div class="photo-slot">PHOTO 4</div>
+                    <div class="photo-slot" data-index="0">
+                        <span class="placeholder">PHOTO 1</span>
+                    </div>
+
+                    <div class="photo-slot" data-index="1">
+                        <span class="placeholder">PHOTO 2</span>
+                    </div>
+
+                    <div class="photo-slot" data-index="2">
+                        <span class="placeholder">PHOTO 3</span>
+                    </div>
+
+                    <div class="photo-slot" data-index="3">
+                        <span class="placeholder">PHOTO 4</span>
+                    </div>
+
                     <p class="strip-caption"></p>
                 </div>
             </section>
 
             <div class="customize">
                 <label for="strip-color">Choose your strip color</label>
+
                 <select id="strip-color">
                     <option value="#f6b8d0">Pink</option>
                     <option value="#d94b55">Red</option>
@@ -68,6 +91,9 @@
     </main>
 
     <footer>your online photobooth!</footer>
+
+    <!-- Captures the actual photo-strip preview for download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
 :root {
     --pink: #f4a9c7;
@@ -79,7 +79,6 @@ body {
     margin-bottom: 12px;
     color: #a9587c;
     font-size: clamp(25px, 5vw, 36px);
-    font-weight: 700;
 }
 
 .intro > p:last-child {
@@ -136,13 +135,6 @@ body {
     pointer-events: none;
 }
 
-#camera-message.session-complete {
-    background: #fff0f5;
-    color: #b44f76;
-    font-size: 18px;
-    font-weight: 700;
-}
-
 #camera-countdown {
     position: absolute;
     z-index: 10;
@@ -166,34 +158,6 @@ body {
 
 #camera-countdown.active {
     display: flex;
-    animation: countdownPop 0.9s ease-in-out;
-}
-
-@keyframes countdownPop {
-    0% {
-        transform: translate(-50%, -50%) scale(0.6);
-    }
-    35% {
-        transform: translate(-50%, -50%) scale(1.15);
-    }
-    70%, 100% {
-        transform: translate(-50%, -50%) scale(1);
-    }
-}
-
-.camera-area.flash::after {
-    content: "";
-    position: absolute;
-    z-index: 4;
-    inset: 0;
-    background: white;
-    pointer-events: none;
-    animation: photoFlash 0.35s ease-out forwards;
-}
-
-@keyframes photoFlash {
-    0%, 100% { opacity: 0; }
-    25% { opacity: 1; }
 }
 
 #status {
@@ -239,12 +203,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 7px 18px rgba(190, 110, 145, 0.18);
-}
-
-button:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: translateY(-2px);
 }
 
 button:disabled {
@@ -281,9 +240,9 @@ button:disabled {
     font-size: 20px;
 }
 
-/* Keep the original strip dimensions */
+/* Photo strip preview */
 .photo-strip {
-    width: 205px;
+    width: 245px;
     max-width: 100%;
     margin: 0 auto;
     padding: 13px 13px 0;
@@ -295,6 +254,7 @@ button:disabled {
 }
 
 .photo-slot {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -303,9 +263,8 @@ button:disabled {
     margin-bottom: 10px;
     padding: 0;
     overflow: hidden;
-    box-sizing: border-box;
-    border: 5px solid white;
-    background: white;
+    border: 5px solid #fff;
+    background: #fff;
     color: #c38aa2;
     font-size: 11px;
     font-weight: 700;
@@ -320,12 +279,72 @@ button:disabled {
     object-position: center;
 }
 
+.placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder[hidden] {
+    display: none;
+}
+
+
 .strip-caption {
     height: 70px;
     margin: 0 -13px;
     padding: 0;
     background: transparent;
     font-size: 0;
+}
+
+/* Retake buttons */
+.retake-slot-button {
+    position: absolute;
+    bottom: 7px;
+    left: 50%;
+    z-index: 5;
+    padding: 7px 12px;
+    border: 1px solid #f2cada;
+    border-radius: 20px;
+    background: rgba(255, 240, 246, 0.96);
+    color: #a9587c;
+    font-size: 11px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(104, 73, 87, 0.15);
+    transform: translateX(-50%);
+}
+
+.retake-slot-button:hover:not(:disabled) {
+    background: #fff;
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.retake-slot-button[hidden] {
+    display: none;
+}
+
+/* Hide controls from the exported image */
+.no-export {
+    display: none !important;
+}
+
+/* Flash when taking a picture */
+.camera-area.flash::after {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    background: white;
+    pointer-events: none;
+    animation: photoFlash 0.25s ease-out forwards;
+}
+
+@keyframes photoFlash {
+    0% { opacity: 0.9; }
+    100% { opacity: 0; }
 }
 
 .customize {
@@ -435,7 +454,7 @@ footer {
     }
 
     .photo-strip {
-        width: 205px;
+        width: 245px;
     }
 
     .photo-slot {
@@ -445,65 +464,5 @@ footer {
     #download-photo {
         min-height: 48px;
         font-size: 12px;
-    }
-}
-
-
-/* Retake buttons on individual photos */
-.photo-slot {
-    position: relative;
-}
-
-.retake-slot-button {
-    position: absolute;
-    bottom: 7px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-
-    padding: 7px 12px;
-    border: 1px solid #f2cada;
-    border-radius: 20px;
-
-    background: rgba(255, 240, 246, 0.96);
-    color: #a9587c;
-
-    font-family: 'Quicksand', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-
-    box-shadow: 0 2px 8px rgba(104, 73, 87, 0.15);
-}
-
-.retake-slot-button:hover:not(:disabled) {
-    background: #ffffff;
-    transform: translateX(-50%) translateY(-2px);
-}
-
-.retake-slot-button[hidden] {
-    display: none;
-}
-
-/* Brief camera flash when a photo is captured */
-.camera-area.flash-effect::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 4;
-
-    background: #ffffff;
-    pointer-events: none;
-
-    animation: camera-flash 180ms ease-out;
-}
-
-@keyframes camera-flash {
-    0% {
-        opacity: 0.95;
-    }
-
-    100% {
-        opacity: 0;
     }
 }
