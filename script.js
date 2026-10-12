@@ -1,41 +1,29 @@
 
-/* =====================================
-   GET HTML ELEMENTS
-===================================== */
-
 const camera = document.getElementById("camera");
 const cameraMessage = document.getElementById("camera-message");
-const startCameraBtn = document.getElementById("start-camera");
-const takePhotoBtn = document.getElementById("take-photo");
+const countdownDisplay = document.getElementById("camera-countdown");
+
+const startCameraButton = document.getElementById("start-camera");
+const takePhotoButton = document.getElementById("take-photo");
+const downloadButton = document.getElementById("download-photo");
+
 const statusText = document.getElementById("status");
 const photoCountText = document.getElementById("photo-count");
 const photoStrip = document.getElementById("photo-strip");
-const colorPicker = document.getElementById("strip-color");
-const downloadBtn = document.getElementById("download-photo");
-const photoSlots = document.querySelectorAll(".photo-slot");
-
-/* =====================================
-   VARIABLES
-===================================== */
+const stripColor = document.getElementById("strip-color");
 
 let stream = null;
 let photos = [];
-let busy = false;
+const TOTAL_PHOTOS = 4;
 
-/* =====================================
-   START CAMERA
-===================================== */
-
-startCameraBtn.addEventListener("click", async () => {
-    statusText.textContent = "Opening camera...";
-
+// Start the camera
+startCameraButton.addEventListener("click", async () => {
     try {
-        if (!navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia) {
-            throw new Error(
-                "Camera access is unavailable. Please use HTTPS or Live Server."
-            );
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
         }
+
+        statusText.textContent = "Starting camera...";
 
         stream = await navigator.mediaDevices.getUserMedia({
             video: {
@@ -48,69 +36,77 @@ startCameraBtn.addEventListener("click", async () => {
         await camera.play();
 
         cameraMessage.style.display = "none";
-        cameraMessage.classList.remove("session-complete");
+        camera.style.display = "block";
 
-        startCameraBtn.disabled = true;
-        takePhotoBtn.disabled = false;
+        photos = [];
+        photoCountText.textContent = "0";
+        takePhotoButton.disabled = false;
+        downloadButton.disabled = true;
 
-        statusText.textContent =
-            "Camera ready! Let's take photos ♡";
+        resetPhotoSlots();
+
+        statusText.textContent = "Camera ready! Take your first photo ♡";
+        startCameraButton.textContent = "Restart Session ♡";
 
     } catch (error) {
         console.error("Camera error:", error);
-
         statusText.textContent =
-            `${error.name}: ${error.message}`;
-
-        cameraMessage.style.display = "flex";
-        cameraMessage.textContent =
-            "Camera unavailable. Check your browser permission ♡";
-
-        startCameraBtn.disabled = false;
+            "Unable to open camera. Please allow camera permission and try again.";
     }
 });
 
-/* =====================================
-   TAKE PHOTO
-===================================== */
+// Reset the four photo slots
+function resetPhotoSlots() {
+    const slots = photoStrip.querySelectorAll(".photo-slot");
 
-takePhotoBtn.addEventListener("click", async () => {
-    if (!stream || busy || photos.length >= 4) {
-        return;
+    slots.forEach((slot, index) => {
+        slot.innerHTML = `PHOTO ${index + 1}`;
+        slot.style.backgroundImage = "";
+    });
+
+    const caption = photoStrip.querySelector(".strip-caption");
+    if (caption) {
+        caption.textContent = "";
+    }
+}
+
+// Countdown helper
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function runCountdown() {
+    for (let number = 3; number >= 1; number--) {
+        countdownDisplay.textContent = number;
+        await wait(1000);
     }
 
-    busy = true;
-    takePhotoBtn.disabled = true;
+    countdownDisplay.textContent = "📸";
+    await wait(300);
 
-    for (let seconds = 3; seconds >= 1; seconds--) {
-        statusText.textContent = `Get ready! ${seconds}...`;
+    countdownDisplay.textContent = "";
+}
 
-        await new Promise(resolve =>
-            setTimeout(resolve, 1000)
-        );
-    }
-
+// Capture one photo
+async function capturePhoto() {
     if (!camera.videoWidth || !camera.videoHeight) {
-        statusText.textContent =
-            "Camera is not ready. Try again.";
-
-        busy = false;
-        takePhotoBtn.disabled = false;
-        return;
+        throw new Error("Camera is not ready.");
     }
 
-    /*
-       Capture the camera's actual frame dimensions.
-       This supports portrait and landscape camera frames.
-    */
+    const videoWidth = camera.videoWidth;
+    const videoHeight = camera.videoHeight;
 
     const canvas = document.createElement("canvas");
-    canvas.width = camera.videoWidth;
-    canvas.height = camera.videoHeight;
-
     const context = canvas.getContext("2d");
 
-    // Mirror the selfie image.
+    /*
+     * Use the camera stream's real dimensions.
+     * This avoids forcing portrait or landscape dimensions.
+     */
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+
+    // Mirror the selfie, like a front-facing camera preview.
     context.translate(canvas.width, 0);
     context.scale(-1, 1);
 
@@ -118,241 +114,235 @@ takePhotoBtn.addEventListener("click", async () => {
         camera,
         0,
         0,
-        canvas.width,
-        canvas.height
+        videoWidth,
+        videoHeight
     );
 
-    // Camera flash effect.
-    const cameraArea = camera.parentElement;
-
-    cameraArea.classList.remove("flash");
-    void cameraArea.offsetWidth;
-    cameraArea.classList.add("flash");
-
-    setTimeout(() => {
-        cameraArea.classList.remove("flash");
-    }, 400);
-
-    photos.push(canvas.toDataURL("image/jpeg", 0.95));
-
-    updatePhotoStrip();
-    photoCountText.textContent = photos.length;
-
-    if (photos.length < 4) {
-        statusText.textContent =
-            `Photo ${photos.length} saved! Take the next one ♡`;
-
-        busy = false;
-        takePhotoBtn.disabled = false;
-
-    } else {
-        statusText.textContent =
-            "All four photos are ready! Choose a color and download ♡";
-
-        takePhotoBtn.disabled = true;
-        stopCamera();
-
-        startCameraBtn.textContent = "Session Complete";
-        busy = false;
-    }
-});
-
-/* =====================================
-   DISPLAY PHOTOS IN PREVIEW
-===================================== */
-
-function updatePhotoStrip() {
-    photoSlots.forEach((slot, index) => {
-        slot.innerHTML = "";
-
-        if (photos[index]) {
-            const img = document.createElement("img");
-
-            img.src = photos[index];
-            img.alt = `Photo ${index + 1}`;
-
-            slot.appendChild(img);
-        } else {
-            slot.textContent = `PHOTO ${index + 1}`;
-        }
-    });
-
-    downloadBtn.disabled = photos.length !== 4;
+    return canvas.toDataURL("image/jpeg", 0.95);
 }
 
-/* =====================================
-   CHANGE STRIP COLOR
-===================================== */
-
-colorPicker.addEventListener("change", () => {
-    photoStrip.style.backgroundColor = colorPicker.value;
-});
-
-/* =====================================
-   DOWNLOAD PHOTO STRIP
-===================================== */
-
-downloadBtn.addEventListener("click", () => {
-    if (photos.length !== 4) {
-        statusText.textContent =
-            "Please take all four photos first ♡";
+// Take Photo button
+takePhotoButton.addEventListener("click", async () => {
+    if (!stream || photos.length >= TOTAL_PHOTOS) {
         return;
     }
 
-    /*
-       Portrait photobooth strip.
-       The 600 x 1800 canvas keeps the same
-       1:3 ratio on desktop and mobile.
-    */
+    takePhotoButton.disabled = true;
 
-    const width = 600;
-    const height = 1800;
-
-    const padding = 25;
-    const gap = 12;
-
-    const photoWidth = width - padding * 2;
-    const photoHeight = 350;
-
-    // Four frames and three gaps, plus the top padding.
-    const footerY =
-        padding + photoHeight * 4 + gap * 3;
-
-    const footerHeight = height - footerY;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-
-    const context = canvas.getContext("2d");
-
-    // Fill the entire strip with the selected color.
-    context.fillStyle = colorPicker.value;
-    context.fillRect(0, 0, width, height);
-
-    let loaded = 0;
-    let failed = false;
-
-    const images = photos.map(src => {
-        const image = new Image();
-
-        image.onload = () => {
-            loaded++;
-
-            if (loaded === 4 && !failed) {
-                drawStrip();
-            }
-        };
-
-        image.onerror = () => {
-            failed = true;
-            statusText.textContent =
-                "Unable to load a photo. Please try again.";
-        };
-
-        image.src = src;
-
-        return image;
-    });
-
-    function drawStrip() {
-        images.forEach((image, index) => {
-            const x = padding;
-            const y = padding + index * (photoHeight + gap);
-
-            // White photo frame.
-            context.fillStyle = "#ffffff";
-            context.fillRect(
-                x,
-                y,
-                photoWidth,
-                photoHeight
-            );
-
-            /*
-               Center-crop each photo to fill the frame.
-               Works for both portrait and landscape images.
-            */
-
-            const scale = Math.max(
-                photoWidth / image.width,
-                photoHeight / image.height
-            );
-
-            const cropWidth = photoWidth / scale;
-            const cropHeight = photoHeight / scale;
-
-            const cropX = (image.width - cropWidth) / 2;
-            const cropY = (image.height - cropHeight) / 2;
-
-            context.save();
-
-            context.beginPath();
-            context.rect(
-                x,
-                y,
-                photoWidth,
-                photoHeight
-            );
-            context.clip();
-
-            context.drawImage(
-                image,
-                cropX,
-                cropY,
-                cropWidth,
-                cropHeight,
-                x,
-                y,
-                photoWidth,
-                photoHeight
-            );
-
-            context.restore();
-        });
-
-        /*
-           Footer stays the same color as the selected strip.
-           The background was already filled, but redraw it
-           explicitly to ensure the footer color matches.
-        */
-
-        context.fillStyle = colorPicker.value;
-        context.fillRect(
-            0,
-            footerY,
-            width,
-            footerHeight
-        );
-
-        // Download the finished strip.
-        const link = document.createElement("a");
-
-        link.download = "JBOOTH-photo-strip.jpg";
-        link.href = canvas.toDataURL("image/jpeg", 0.95);
-
-        link.click();
+    try {
+        const photoNumber = photos.length + 1;
 
         statusText.textContent =
-            "Your JPG has been downloaded! ♡";
+            `Get ready for photo ${photoNumber} of ${TOTAL_PHOTOS} ♡`;
+
+        await runCountdown();
+
+        const photoData = await capturePhoto();
+        photos.push(photoData);
+
+        updatePhotoStrip();
+
+        photoCountText.textContent = photos.length;
+
+        // Flash effect
+        document.body.classList.add("camera-flash");
+        await wait(150);
+        document.body.classList.remove("camera-flash");
+
+        if (photos.length < TOTAL_PHOTOS) {
+            statusText.textContent =
+                `Photo ${photos.length} saved! Get ready for the next one ♡`;
+
+            takePhotoButton.disabled = false;
+        } else {
+            statusText.textContent =
+                "All 4 photos taken! Download your photo strip ♡";
+
+            downloadButton.disabled = false;
+
+            // Stop the camera when the session is complete.
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                camera.srcObject = null;
+            }
+
+            camera.style.display = "none";
+            cameraMessage.style.display = "block";
+            cameraMessage.textContent = "Photo session complete! ♡";
+
+            startCameraButton.textContent = "Start New Session ♡";
+        }
+    } catch (error) {
+        console.error("Photo capture error:", error);
+        statusText.textContent =
+            "Could not capture photo. Please try again.";
+
+        takePhotoButton.disabled = false;
     }
 });
 
-/* =====================================
-   STOP CAMERA
-===================================== */
+// Display the captured photos
+function updatePhotoStrip() {
+    const slots = photoStrip.querySelectorAll(".photo-slot");
 
-function stopCamera() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
+    photos.forEach((photo, index) => {
+        const slot = slots[index];
+
+        if (!slot) return;
+
+        slot.innerHTML = "";
+
+        const image = document.createElement("img");
+        image.src = photo;
+        image.alt = `Photo ${index + 1}`;
+
+        image.style.display = "block";
+        image.style.width = "100%";
+        image.style.height = "100%";
+        image.style.objectFit = "cover";
+        image.style.objectPosition = "center";
+
+        slot.appendChild(image);
+    });
+}
+
+// Change strip background color
+stripColor.addEventListener("change", () => {
+    photoStrip.style.backgroundColor = stripColor.value;
+});
+
+// Download the completed photo strip
+downloadButton.addEventListener("click", async () => {
+    if (photos.length !== TOTAL_PHOTOS) {
+        statusText.textContent = "Please take all 4 photos first ♡";
+        return;
     }
 
-    camera.srcObject = null;
+    downloadButton.disabled = true;
+    statusText.textContent = "Preparing your photo strip... ♡";
 
-    cameraMessage.textContent =
-        "Scroll down to edit your strip and download ♡";
+    try {
+        const outputCanvas = document.createElement("canvas");
+        const context = outputCanvas.getContext("2d");
 
-    cameraMessage.style.display = "flex";
-    cameraMessage.classList.add("session-complete");
+        const stripWidth = 600;
+        const padding = 25;
+        const gap = 12;
+        const photoHeight = 350;
+
+        outputCanvas.width = stripWidth;
+        outputCanvas.height =
+            padding * 2 +
+            photoHeight * TOTAL_PHOTOS +
+            gap * (TOTAL_PHOTOS - 1) +
+            80;
+
+        // Strip background
+        context.fillStyle = stripColor.value;
+        context.fillRect(
+            0,
+            0,
+            outputCanvas.width,
+            outputCanvas.height
+        );
+
+        for (let index = 0; index < photos.length; index++) {
+            const image = await loadImage(photos[index]);
+
+            const x = padding;
+            const y = padding + index * (photoHeight + gap);
+            const frameWidth = stripWidth - padding * 2;
+
+            // White photo border
+            context.fillStyle = "#ffffff";
+            context.fillRect(
+                x - 6,
+                y - 6,
+                frameWidth + 12,
+                photoHeight + 12
+            );
+
+            // Crop to fit the frame without stretching.
+            drawCover(
+                context,
+                image,
+                x,
+                y,
+                frameWidth,
+                photoHeight
+            );
+        }
+
+        // Caption
+        context.fillStyle = "#ffffff";
+        context.font = "bold 26px Arial";
+        context.textAlign = "center";
+        context.fillText(
+            "JBOOTH ♡",
+            stripWidth / 2,
+            outputCanvas.height - 25
+        );
+
+        const link = document.createElement("a");
+        link.download = "JBOOTH-photo-strip.jpg";
+        link.href = outputCanvas.toDataURL("image/jpeg", 0.95);
+        link.click();
+
+        statusText.textContent = "Your photo strip is ready! ♡";
+    } catch (error) {
+        console.error("Download error:", error);
+        statusText.textContent =
+            "Could not create the photo strip. Please try again.";
+    } finally {
+        downloadButton.disabled = false;
+    }
+});
+
+// Load a photo for the download canvas
+function loadImage(source) {
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(
+            new Error("Could not load captured photo.")
+        );
+
+        image.src = source;
+    });
 }
+
+// Fill a frame while preserving the image proportions
+function drawCover(context, image, x, y, width, height) {
+    const imageRatio = image.width / image.height;
+    const frameRatio = width / height;
+
+    let sourceX = 0;
+    let sourceY = 0;
+    let sourceWidth = image.width;
+    let sourceHeight = image.height;
+
+    if (imageRatio > frameRatio) {
+        sourceWidth = image.height * frameRatio;
+        sourceX = (image.width - sourceWidth) / 2;
+    } else {
+        sourceHeight = image.width / frameRatio;
+        sourceY = (image.height - sourceHeight) / 2;
+    }
+
+    context.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        x,
+        y,
+        width,
+        height
+    );
+}
+
+// Apply the selected color immediately
+photoStrip.style.backgroundColor = stripColor.value;

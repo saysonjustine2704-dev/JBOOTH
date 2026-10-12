@@ -1363,3 +1363,54 @@ footer {
     height: 100%;
     object-fit: cover;
 }
+
+
+/* FIX: Prevent double scrolling */
+html {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    height: auto;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+.photobooth,
+.booth-card,
+.intro,
+.strip-preview {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+}
+
+/* FIX: Prevent double scrolling */
+html {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    height: auto;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+.photobooth,
+.booth-card,
+.intro,
+.strip-preview {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+}
